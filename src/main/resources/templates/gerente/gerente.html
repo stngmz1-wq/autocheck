@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Panel Gerente — Concesionario</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/manager-theme.css}"/>
+  <link rel="stylesheet" th:href="@{/css/gerente-panel.css}"/>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside th:replace="~{fragments/gerente-sidebar :: sidebar}"></aside>
+
+  <!-- Contenido principal -->
+  <main class="main">
+
+    <!-- Encabezado -->
+    <div class="content-header">
+      <h1><i class="fa-solid fa-gauge-high"></i> Panel del Gerente</h1>
+      <p>Resumen ejecutivo del concesionario</p>
+      <p class="muted-note">Actualizado: <strong th:text="${actualizadoEn}">--</strong></p>
+    </div>
+
+    <!-- Fila 1 de estadísticas -->
+    <div class="stats-container">
+      <div class="stat-card vehiculos">
+        <span class="stat-card-icon">🚗</span>
+        <span class="stat-card-label">Vehículos Activos</span>
+        <span class="stat-card-value" th:text="${vehiculosActivos}">0</span>
+      </div>
+      <div class="stat-card roles">
+        <span class="stat-card-icon">👥</span>
+        <span class="stat-card-label">Clientes Interesados</span>
+        <span class="stat-card-value" th:text="${clientesInteresados}">0</span>
+      </div>
+    </div>
+
+    <!-- Fila 2 de estadísticas -->
+    <div class="stats-container">
+      <div class="stat-card inventario">
+        <span class="stat-card-icon">📦</span>
+        <span class="stat-card-label">Total Inventario</span>
+        <span class="stat-card-value" th:text="${totalInventario}">0</span>
+      </div>
+      <div class="stat-card novedades">
+        <span class="stat-card-icon">⚠️</span>
+        <span class="stat-card-label">Novedades Pendientes</span>
+        <span class="stat-card-value" th:text="${novedadesPendientes}">0</span>
+      </div>
+    </div>
+
+    <!-- Fila 3 de estadísticas comerciales -->
+    <div class="stats-container">
+      <div class="stat-card ingresos-mes">
+        <span class="stat-card-icon"><i class="fa-solid fa-sack-dollar"></i></span>
+        <span class="stat-card-label">Ingresos del Mes</span>
+        <span class="stat-card-value" th:text="${ingresosMes}">$0</span>
+      </div>
+      <div class="stat-card ingresos-total">
+        <span class="stat-card-icon"><i class="fa-solid fa-coins"></i></span>
+        <span class="stat-card-label">Ingresos Acumulados</span>
+        <span class="stat-card-value" th:text="${ingresosTotales}">$0</span>
+      </div>
+      <div class="stat-card ticket-promedio">
+        <span class="stat-card-icon"><i class="fa-solid fa-receipt"></i></span>
+        <span class="stat-card-label">Ticket Promedio</span>
+        <span class="stat-card-value" th:text="${ticketPromedio}">$0</span>
+      </div>
+      <div class="stat-card ventas-totales">
+        <span class="stat-card-icon"><i class="fa-solid fa-chart-line"></i></span>
+        <span class="stat-card-label">Ventas Históricas</span>
+        <span class="stat-card-value" th:text="${ventasTotales}">0</span>
+      </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="card">
+      <div class="section-title">
+        <h2><i class="fa-solid fa-bolt"></i> Acciones Rápidas</h2>
+      </div>
+      <div class="action-buttons">
+        <a th:href="@{/gerente/reportes/pdf}" class="btn">
+          <i class="fa-solid fa-file-pdf"></i> Descargar Reporte PDF
+        </a>
+        <a th:href="@{/gerente/reportes/excel}" class="btn ghost">
+          <i class="fa-solid fa-file-excel"></i> Descargar Reporte Excel
+        </a>
+        <a th:href="@{/gerente/clientes/interesados}" class="btn ghost">
+          <i class="fa-solid fa-user-check"></i> Ver Interesados
+        </a>
+        <a th:href="@{/gerente/vehiculos/crear}" class="btn">
+          <i class="fa-solid fa-plus"></i> Nuevo Vehículo
+        </a>
+        <a th:href="@{/gerente/inventario/crear}" class="btn">
+          <i class="fa-solid fa-boxes-packing"></i> Nuevo Inventario
+        </a>
+        <a th:href="@{/gerente/novedades}" class="btn ghost">
+          <i class="fa-solid fa-triangle-exclamation"></i> Ver Novedades
+        </a>
+        <a th:href="@{/correo/inbox}" class="btn ghost">
+          <i class="fa-solid fa-envelope"></i> Bandeja de Correo
+        </a>
+        <a th:href="@{/correo/enviados}" class="btn ghost">
+          <i class="fa-solid fa-paper-plane"></i> Correos Enviados
+        </a>
+        <a th:href="@{/email/enviar}" class="btn ghost">
+          <i class="fa-solid fa-users"></i> Correo Masivo
+        </a>
+      </div>
+    </div>
+
+    <!-- Gráficas comerciales -->
+    <div class="charts-container">
+      <div class="chart-box">
+        <div class="chart-title">
+          <i class="fa-solid fa-chart-column"></i> Ventas por Mes
+        </div>
+        <canvas id="ventasMensualesChart" height="120"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">
+          <i class="fa-solid fa-money-bill-trend-up"></i> Ingresos por Mes
+        </div>
+        <canvas id="ingresosMensualesChart" height="120"></canvas>
+      </div>
+    </div>
+
+    <!-- Tablas de análisis -->
+    <div class="charts-container">
+
+      <!-- Vehículos más solicitados -->
+      <div class="chart-box">
+        <div class="chart-title">
+          <i class="fa-solid fa-star"></i> Vehículos más Solicitados
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Modelo / Marca</th>
+              <th>Solicitudes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="entry : ${vehiculosMasSolicitados}">
+              <td th:text="${entry.key}">—</td>
+              <td th:text="${entry.value}">0</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(vehiculosMasSolicitados)}">
+              <td colspan="2" class="empty-row">Sin solicitudes registradas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Rendimiento de vendedores -->
+      <div class="chart-box">
+        <div class="chart-title">
+          <i class="fa-solid fa-trophy"></i> Rendimiento de Vendedores
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Vendedor</th>
+              <th>Ventas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="entry : ${rendimientoVendedores}">
+              <td th:text="${entry.vendedor}">—</td>
+              <td th:text="${entry.ventas}">0</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rendimientoVendedores)}">
+              <td colspan="2" class="empty-row">Sin ventas registradas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Resumen mensual comercial -->
+    <div class="card">
+      <div class="section-title">
+        <h2><i class="fa-solid fa-table-list"></i> Resumen Mensual Comercial</h2>
+      </div>
+      <p class="muted-note">La información de esta tabla alimenta las gráficas del panel y los reportes descargables.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Mes</th>
+            <th>Interesados</th>
+            <th>Ventas</th>
+            <th>Ingresos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="fila : ${resumenMensual}">
+            <td th:text="${fila.mes}">--</td>
+            <td th:text="${fila.interesados}">0</td>
+            <td th:text="${fila.ventas}">0</td>
+            <td th:text="${fila.ingresos}">$0</td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(resumenMensual)}">
+            <td colspan="4" class="empty-row">Sin información mensual disponible</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Resumen de pedidos por estado -->
+    <div class="card">
+      <div class="section-title">
+        <h2><i class="fa-solid fa-chart-bar"></i> Estado de Pedidos</h2>
+      </div>
+      <p class="muted-note">
+        Total de pedidos registrados: <strong th:text="${pedidosTotales}">0</strong>
+      </p>
+      <div class="action-buttons">
+        <a th:href="@{/gerente/clientes/interesados}" class="btn ghost">
+          <i class="fa-solid fa-list"></i> Ver todos los interesados
+        </a>
+        <a th:href="@{/gerente/inventario}" class="btn ghost">
+          <i class="fa-solid fa-warehouse"></i> Gestionar Inventario
+        </a>
+        <a th:href="@{/clima}" class="btn ghost">
+          <i class="fa-solid fa-cloud-sun"></i> Ver Clima
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script th:inline="javascript">
+    const etiquetas = /*[[${mesesLabels}]]*/ [];
+    const ventasMensuales = /*[[${ventasMensuales}]]*/ [];
+    const ingresosMensuales = /*[[${ingresosMensuales}]]*/ [];
+
+    const ventasCtx = document.getElementById('ventasMensualesChart');
+    const ingresosCtx = document.getElementById('ingresosMensualesChart');
+
+    if (ventasCtx) {
+      new Chart(ventasCtx, {
+        type: 'bar',
+        data: {
+          labels: etiquetas,
+          datasets: [{
+            label: 'Ventas',
+            data: ventasMensuales,
+            backgroundColor: '#1e3a5f',
+            borderRadius: 6,
+            maxBarThickness: 36
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    if (ingresosCtx) {
+      new Chart(ingresosCtx, {
+        type: 'line',
+        data: {
+          labels: etiquetas,
+          datasets: [{
+            label: 'Ingresos',
+            data: ingresosMensuales,
+            borderColor: '#f5a623',
+            backgroundColor: 'rgba(245, 166, 35, 0.18)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: '#f5a623'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+

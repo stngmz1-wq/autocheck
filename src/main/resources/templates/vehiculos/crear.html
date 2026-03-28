@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Vehículo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin-theme.css}">
+    
+</head>
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar collapsed" id="sidebar">
+
+<div>
+
+<div class="sidebar-header">
+<button id="toggleSidebar" class="toggle-btn">
+<i class="fas fa-bars"></i>
+</button>
+<h3><span>Admin Panel</span></h3>
+</div>
+
+<nav>
+<ul>
+
+<li><a th:href="@{/dashboard}">
+<i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+
+<li><a th:href="@{/usuarios}">
+<i class="fas fa-users"></i><span>Usuarios</span></a></li>
+
+<li><a th:href="@{/vehiculos}">
+<i class="fas fa-car"></i><span>Vehículos</span></a></li>
+
+<li><a th:href="@{/inventario}">
+<i class="fas fa-warehouse"></i><span>Inventario</span></a></li>
+
+<li><a th:href="@{/roles}">
+<i class="fas fa-id-badge"></i><span>Roles</span></a></li>
+
+<li><a th:href="@{/transporte}">
+<i class="fas fa-shipping-fast"></i><span>Transporte</span></a></li>
+
+</ul>
+</nav>
+
+</div>
+
+<form th:action="@{/logout}" method="post">
+<button type="submit" class="logout-btn">
+<i class="fas fa-sign-out-alt"></i> Cerrar sesión
+</button>
+</form>
+
+</aside>
+        </div>
+    </div>
+    <main class="main">
+        <div class="control-block" style="max-width: 600px; margin: 2rem auto;">
+            <div class="control-title">
+                <i class="fas fa-plus"></i>
+                <h2>Crear Vehículo</h2>
+            </div>
+            <form th:action="@{/vehiculos/guardar}" method="post" enctype="multipart/form-data" th:object="${vehiculo}" style="background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(44,62,80,0.08); padding: 2rem; display: flex; flex-direction: column; gap: 1.2rem;">
+                <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
+                    <div style="flex: 1 1 220px;">
+                        <label for="chasis" style="font-weight: 600; color: var(--blue-dark);">Chasis</label>
+                        <input type="text" id="chasis" th:field="*{chasis}" class="form-control" required style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                    <div style="flex: 1 1 220px;">
+                        <label for="marca" style="font-weight: 600; color: var(--blue-dark);">Marca</label>
+                        <input type="text" id="marca" th:field="*{marca}" class="form-control" required style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
+                    <div style="flex: 1 1 220px;">
+                        <label for="modelo" style="font-weight: 600; color: var(--blue-dark);">Modelo</label>
+                        <input type="text" id="modelo" th:field="*{modelo}" class="form-control" required style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                    <div style="flex: 1 1 120px;">
+                        <label for="anio" style="font-weight: 600; color: var(--blue-dark);">Año</label>
+                        <input type="number" id="anio" th:field="*{anio}" class="form-control" required min="1900" max="2100" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
+                    <div style="flex: 1 1 220px;">
+                        <label for="cilindrada" style="font-weight: 600; color: var(--blue-dark);">Cilindrada</label>
+                        <input type="text" id="cilindrada" th:field="*{cilindrada}" class="form-control" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                    <div style="flex: 1 1 220px;">
+                        <label for="tipoCombustible" style="font-weight: 600; color: var(--blue-dark);">Tipo de Combustible</label>
+                        <input type="text" id="tipoCombustible" th:field="*{tipoCombustible}" class="form-control" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
+                    <div style="flex: 1 1 220px;">
+                        <label for="transmision" style="font-weight: 600; color: var(--blue-dark);">Transmisión</label>
+                        <input type="text" id="transmision" th:field="*{transmision}" class="form-control" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                    <div style="flex: 1 1 220px;">
+                        <label for="precio" style="font-weight: 600; color: var(--blue-dark);">Precio</label>
+                        <input type="number" id="precio" th:field="*{precio}" class="form-control" step="0.01" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                    </div>
+                </div>
+                <div>
+                    <label for="descripcion" style="font-weight: 600; color: var(--blue-dark);">Descripción</label>
+                    <textarea id="descripcion" th:field="*{descripcion}" class="form-control" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary); min-height: 80px;"></textarea>
+                </div>
+                <div>
+                    <label for="imagenFile" style="font-weight: 600; color: var(--blue-dark);">Imagen del Vehículo</label>
+                    <input type="file" id="imagenFile" name="imagenFile" accept="image/*" class="form-control" style="width: 100%; padding: .7rem; border-radius: 6px; border: 1px solid var(--blue-secondary);">
+                </div>
+                <div style="display: flex; gap: 1.2rem; align-items: center;">
+                    <button type="submit" style="background: var(--gold); color: var(--blue-dark); border-radius: 8px; padding: .7rem 1.3rem; font-weight: 600; border: none; box-shadow: 0 2px 8px rgba(44,62,80,0.08); cursor: pointer;">
+                        <i class="fas fa-save"></i> Guardar Vehículo
+                    </button>
+                    <a th:href="@{/vehiculos}" style="color: var(--gold); font-weight: 600; text-decoration: none;">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+<!-- ================= SCRIPT ================= -->
+<script>
+
+const sidebar = document.getElementById("sidebar");
+const toggleBtn = document.getElementById("toggleSidebar");
+
+let lockedOpen=false;
+
+toggleBtn.onclick=()=>{
+lockedOpen=!lockedOpen;
+sidebar.classList.toggle("collapsed",!lockedOpen);
+sidebar.classList.toggle("expanded",lockedOpen);
+};
+
+sidebar.onmouseenter=()=>{
+if(!lockedOpen) sidebar.classList.replace("collapsed","expanded");
+};
+
+sidebar.onmouseleave=()=>{
+if(!lockedOpen) sidebar.classList.replace("expanded","collapsed");
+};
+
+function mostrarNombreArchivo(input){
+const fileName=document.getElementById('fileName');
+fileName.textContent=
+input.files.length
+? "📄 "+input.files[0].name
+: "";
+} 
+</script>
+</html>

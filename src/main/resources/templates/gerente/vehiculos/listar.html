@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Vehículos — Gerente</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/manager-theme.css}"/>
+  <link rel="stylesheet" th:href="@{/css/gerente-panel.css}"/>
+</head>
+<body>
+
+  <aside th:replace="~{fragments/gerente-sidebar :: sidebar}"></aside>
+
+  <main class="main">
+    <div class="content-header">
+      <h1><i class="fa-solid fa-car"></i> Catálogo de Vehículos</h1>
+      <p>Gestiona el listado de vehículos disponibles en el sistema</p>
+    </div>
+
+    <div class="card">
+      <div class="layout-between">
+        <div class="section-title">
+          <h2><i class="fa-solid fa-cars"></i> Vehículos registrados</h2>
+        </div>
+        <a th:href="@{/gerente/vehiculos/crear}" class="btn">
+          <i class="fa-solid fa-plus"></i> Nuevo Vehículo
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Imagen</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Precio</th>
+            <th>Combustible</th>
+            <th>Transmisión</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="v : ${vehiculos}">
+            <td th:text="${v.idVehiculo}">1</td>
+            <td>
+              <img th:if="${v.imagen != null}"
+                   th:src="@{'/imagenes/' + ${v.idVehiculo}}"
+                   alt="Imagen" class="thumb"/>
+              <span th:unless="${v.imagen != null}" class="empty-note">Sin imagen</span>
+            </td>
+            <td th:text="${v.marca}">—</td>
+            <td th:text="${v.modelo}">—</td>
+            <td th:text="${v.anio}">—</td>
+            <td th:text="${v.precio != null ? '$' + #numbers.formatDecimal(v.precio,1,'COMMA',0,'POINT') : '—'}">—</td>
+            <td th:text="${v.tipoCombustible}">—</td>
+            <td th:text="${v.transmision}">—</td>
+            <td>
+              <span th:classappend="${v.activo ? 'bg-success' : 'bg-danger'}"
+                    class="status-pill">
+                <span th:text="${v.activo ? 'Activo' : 'Inactivo'}"></span>
+              </span>
+            </td>
+            <td>
+              <div class="row-actions">
+                <a th:href="@{'/gerente/vehiculos/editar/' + ${v.idVehiculo}}" class="btn ghost">
+                  <i class="fa-solid fa-pen"></i> Editar
+                </a>
+                <form th:action="@{'/gerente/vehiculos/eliminar/' + ${v.idVehiculo}}" method="post">
+                  <button type="submit" class="btn ghost"
+                          onclick="return confirm('¿Eliminar este vehículo?')">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(vehiculos)}">
+            <td colspan="10" class="empty-row">
+              No hay vehículos registrados
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1"/>
+	<title>Ventas y Oportunidades - Vendedor</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+	<link rel="stylesheet" th:href="@{/css/manager-theme.css}"/>
+	<link rel="stylesheet" th:href="@{/css/gerente-panel.css}"/>
+</head>
+<body>
+	<aside th:replace="~{fragments/vendedor-sidebar :: sidebar}"></aside>
+
+	<main class="main">
+		<div class="content-header">
+			<h1><i class="fa-solid fa-cash-register"></i> Ventas y Oportunidades</h1>
+			<p>Registra negociaciones, cierres de venta y seguimiento comercial de clientes.</p>
+		</div>
+
+		<div th:if="${success}" class="card card-alert success" th:text="${success}"></div>
+
+		<div class="card card-medium">
+			<div class="section-title">
+				<h2><i class="fa-solid fa-plus"></i> Registrar oportunidad o venta</h2>
+			</div>
+
+			<form th:action="@{/vendedor/ventas}" method="post">
+				<div class="form-grid">
+					<div class="col-span-full">
+						<label>Vehículo</label>
+						<select name="inventarioId" class="field-control" required>
+							<option value="">-- Seleccionar vehículo --</option>
+							<option th:each="inv : ${inventariosDisponibles}"
+											th:value="${inv.idInventario}"
+											th:text="${(inv.marca != null ? inv.marca : 'Sin marca') + ' ' + (inv.modelo != null ? inv.modelo : 'Sin modelo') + ' | Chasis: ' + (inv.chasis != null ? inv.chasis : 'N/A')}">
+								Vehículo
+							</option>
+						</select>
+					</div>
+
+					<div>
+						<label>Nombre del cliente</label>
+						<input type="text" name="clienteNombre" class="field-control" required placeholder="Nombre completo"/>
+					</div>
+
+					<div>
+						<label>Teléfono</label>
+						<input type="text" name="clienteTelefono" class="field-control" placeholder="3001234567"/>
+					</div>
+
+					<div>
+						<label>Correo</label>
+						<input type="email" name="clienteCorreo" class="field-control" placeholder="cliente@correo.com"/>
+					</div>
+
+					<div>
+						<label>Estado comercial</label>
+						<select name="estado" class="field-control" required>
+							<option value="pendiente">Pendiente</option>
+							<option value="contactado">Contactado</option>
+							<option value="negociando" selected>Negociando</option>
+							<option value="vendido">Vendido</option>
+							<option value="entregado">Entregado</option>
+							<option value="perdido">Perdido</option>
+						</select>
+					</div>
+
+					<div class="col-span-full">
+						<label>Observación</label>
+						<textarea name="observacion" rows="3" class="field-control field-textarea" placeholder="Notas de negociación, condiciones, objeciones del cliente..."></textarea>
+					</div>
+				</div>
+
+				<div class="action-buttons top-space">
+					<button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> Guardar registro</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="card">
+			<div class="section-title">
+				<h2><i class="fa-solid fa-table"></i> Mis registros comerciales</h2>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Cliente</th>
+						<th>Vehículo</th>
+						<th>Estado</th>
+						<th>Fecha</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="v : ${misVentas}">
+						<td th:text="${v.idPedido}">1</td>
+						<td th:text="${v.descripcion}">Cliente</td>
+						<td th:text="${v.vehiculo != null ? (v.vehiculo.marca + ' ' + v.vehiculo.modelo) : 'Sin vehículo'}">Vehículo</td>
+						<td>
+							<span class="status-pill"
+										th:classappend="${v.estado == 'vendido' or v.estado == 'entregado' ? ' bg-success' : ' bg-danger'}"
+										th:text="${v.estado}">estado</span>
+						</td>
+						<td th:text="${v.fechaCreacion != null ? #temporals.format(v.fechaCreacion, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(misVentas)}">
+						<td colspan="5" class="empty-row">Todavía no hay ventas/oportunidades registradas.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</main>
+</body>
+</html>

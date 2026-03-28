@@ -1,0 +1,226 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión de Vehículos</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/admin-theme.css}">
+
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar collapsed" id="sidebar"
+     onmouseenter="openSidebar()"
+     onmouseleave="closeSidebar()">
+
+<div>
+
+<div class="sidebar-header">
+    <button class="toggle-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+    <span class="logo-text">Admin Panel</span>
+</div>
+
+<nav>
+<ul>
+
+<li>
+<a th:href="@{/dashboard}">
+<i class="fas fa-chart-line"></i>
+<span>Dashboard</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/usuarios}">
+<i class="fas fa-users"></i>
+<span>Usuarios</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/vehiculos}">
+<i class="fas fa-car"></i>
+<span>Vehículos</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/inventario}">
+<i class="fas fa-warehouse"></i>
+<span>Inventario</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/roles}">
+<i class="fas fa-id-badge"></i>
+<span>Roles</span>
+</a>
+</li>
+<li>
+<a th:href="@{/correo/inbox}">
+<i class="fas fa-envelope"></i>
+<span>Correo</span>
+</a>
+</li>
+
+</ul>
+</nav>
+
+</div>
+
+<div class="logout">
+<form th:action="@{/logout}" method="post">
+<button type="submit">
+<i class="fas fa-sign-out-alt"></i>
+<span>Cerrar sesión</span>
+</button>
+</form>
+</div>
+
+</div>
+
+
+<!-- MAIN -->
+<main class="main">
+
+<div class="control-block" style="max-width:600px;margin:2rem auto;">
+
+<div class="control-title">
+<i class="fas fa-car"></i>
+<h2>Gestión de Vehículos</h2>
+</div>
+
+<div style="display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem;">
+
+<a th:href="@{/vehiculos/crear}" class="module-action"
+style="background:var(--gold);color:var(--blue-dark);border-radius:8px;padding:.7rem 1.3rem;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(44,62,80,0.08);">
+<i class="fas fa-plus"></i> Agregar Vehículo
+</a>
+
+<span style="font-weight:600;color:var(--blue-dark);">
+Total de Vehículos: <span th:text="${vehiculos.size()}"></span>
+</span>
+
+<a th:href="@{/vehiculos}" style="color:var(--gold);font-weight:600;text-decoration:none;">
+Solo Activos
+</a>
+
+<a th:href="@{/vehiculos(mostrarInactivos=true)}" style="color:var(--gold);font-weight:600;text-decoration:none;">
+Ver Todos
+</a>
+
+</div>
+
+
+<div th:if="${vehiculos.size() > 0}" style="margin-top:2rem;">
+
+<table style="width:100%;border-collapse:collapse;">
+
+<thead>
+<tr style="background:var(--bg);color:var(--blue-dark);">
+<th>Imagen</th>
+<th>Marca</th>
+<th>Modelo</th>
+<th>Año</th>
+<th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr th:each="vehiculo : ${vehiculos}" style="background:#fff;">
+
+<td style="text-align:center;">
+
+<img th:if="${vehiculo.imagen != null}"
+th:src="@{'/vehiculos/imagen/' + ${vehiculo.idVehiculo}}"
+alt="Vehículo"
+style="width:60px;height:40px;object-fit:cover;border-radius:8px;"/>
+
+<span th:if="${vehiculo.imagen == null}">
+<i class="fas fa-car" style="font-size:2rem;color:var(--gold);"></i>
+</span>
+
+</td>
+
+<td th:text="${vehiculo.marca}"></td>
+<td th:text="${vehiculo.modelo}"></td>
+<td th:text="${vehiculo.anio}"></td>
+
+<td>
+
+<a th:href="@{'/vehiculos/editar/' + ${vehiculo.idVehiculo}}"
+style="background:var(--gold);color:var(--blue-dark);border:none;border-radius:8px;padding:0.5rem 1.2rem;font-weight:600;text-decoration:none;margin-right:8px;box-shadow:0 2px 8px rgba(44,62,80,0.08);">
+<i class="fas fa-edit"></i> Editar
+</a>
+
+<form th:action="@{'/vehiculos/eliminar/' + ${vehiculo.idVehiculo}}" method="post" style="display:inline;">
+
+<button type="submit"
+style="background:linear-gradient(135deg,#e53935 0%,#ff5252 100%);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-weight:600;box-shadow:0 2px 8px rgba(229,57,53,0.12);cursor:pointer;"
+onclick="return confirm('¿Seguro que deseas eliminar este vehículo?');">
+
+<i class="fas fa-trash"></i> Eliminar
+
+</button>
+
+</form>
+
+</td>
+
+</tr>
+
+</tbody>
+</table>
+
+</div>
+
+
+<div th:unless="${vehiculos.size() > 0}" style="margin-top:2.5rem;text-align:center;">
+
+<span style="font-size:2.2rem;color:var(--gold);">
+<i class="fas fa-car"></i>
+</span>
+
+<h2 style="margin:.5rem 0 0 0;font-size:1.3rem;color:var(--blue-dark);font-weight:700;">
+No hay vehículos
+</h2>
+
+<p style="color:var(--gray);font-size:1rem;margin-top:.5rem;">
+Comienza agregando un nuevo vehículo al catálogo
+</p>
+
+<a th:href="@{/vehiculos/crear}"
+style="background:var(--gold);color:var(--blue-dark);border-radius:8px;padding:.7rem 1.3rem;font-weight:600;text-decoration:none;margin-top:1rem;display:inline-block;">
+<i class="fas fa-plus"></i> Crear Vehículo
+</a>
+
+</div>
+
+</div>
+</main>
+
+
+<script>
+
+function openSidebar(){
+document.getElementById("sidebar").classList.remove("collapsed");
+}
+
+function closeSidebar(){
+document.getElementById("sidebar").classList.add("collapsed");
+}
+
+</script>
+
+</body>
+</html>
+```

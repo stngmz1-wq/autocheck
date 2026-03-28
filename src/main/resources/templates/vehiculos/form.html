@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${vehiculo.idVehiculo != null ? 'Editar Vehículo' : 'Crear Vehículo'}"></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin-theme.css}">
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+    <link rel="stylesheet" th:href="@{/css/reporte-inventario.css}">
+</head>
+<body>
+    <aside class="sidebar collapsed" id="sidebar">
+
+<div>
+
+<!-- HEADER SIDEBAR -->
+<div class="sidebar-header">
+
+<button id="toggleSidebar" class="toggle-btn">
+<i class="fas fa-bars"></i>
+</button>
+
+<h3>
+<span>Admin Panel</span>
+</h3>
+
+</div>
+
+<!-- NAV -->
+<nav>
+<ul>
+
+<li>
+<a th:href="@{/dashboard}">
+<i class="fas fa-chart-line"></i>
+<span>Dashboard</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/usuarios}">
+<i class="fas fa-users"></i>
+<span>Usuarios</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/vehiculos}">
+<i class="fas fa-car"></i>
+<span>Vehículos</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/inventario}">
+<i class="fas fa-warehouse"></i>
+<span>Inventario</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/roles}">
+<i class="fas fa-id-badge"></i>
+<span>Roles</span>
+</a>
+</li>
+
+<li>
+<a th:href="@{/transporte}">
+<i class="fas fa-shipping-fast"></i>
+<span>Transporte</span>
+</a>
+</li>
+
+<!-- CORREO DROPDOWN -->
+<li class="dropdown-menu-item">
+
+<a th:href="@{/correo/inbox}" class="dropdown-toggle">
+<i class="fas fa-envelope"></i>
+<span>Correo</span>
+
+<span th:if="${unreadCount != null and unreadCount > 0}"
+class="notification-badge"
+th:text="${unreadCount}">
+0
+</span>
+
+</a>
+
+<ul class="dropdown-submenu">
+
+<li>
+<a th:href="@{/correo/inbox}">
+<i class="fas fa-inbox"></i> Bandeja de entrada
+</a>
+</li>
+
+<li>
+<a th:href="@{/correo/enviados}">
+<i class="fas fa-paper-plane"></i> Enviados
+</a>
+</li>
+
+<li>
+<a th:href="@{/correo/papelera}">
+<i class="fas fa-trash"></i> Papelera
+</a>
+</li>
+
+<li>
+<a th:href="@{/email/enviar}">
+<i class="fas fa-users"></i> Correos Masivos
+</a>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</nav>
+
+</div>
+
+<!-- LOGOUT -->
+<form th:action="@{/logout}" method="post">
+<button type="submit" class="logout-btn">
+<i class="fas fa-sign-out-alt"></i>
+<span>Cerrar sesión</span>
+</button>
+</form>
+
+</aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main">
+            <div class="control-block" style="max-width: 900px; margin: 2rem auto;">
+                <div class="control-title">
+                    <i class="fas fa-car"></i>
+                    <h2 th:text="${vehiculo.idVehiculo != null ? 'Editar Vehículo' : 'Crear Nuevo Vehículo'}"></h2>
+                    <p th:text="${vehiculo.idVehiculo != null ? 'Actualiza la información del vehículo' : 'Agrega un nuevo vehículo al catálogo'}"></p>
+                </div>
+                <!-- Mensaje de success/error -->
+                <div th:if="${success}" class="alert-success" style="margin-bottom:1rem;">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${success}"></span>
+                </div>
+                <div th:if="${error}" class="alert-error" style="margin-bottom:1rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span th:text="${error}"></span>
+                </div>
+                <!-- FORM -->
+                <form th:action="@{${vehiculo.idVehiculo != null ? '/vehiculos/actualizar/' + vehiculo.idVehiculo : '/vehiculos/guardar'}}"
+                      method="post" enctype="multipart/form-data" th:object="${vehiculo}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+                        <div class="form-group">
+                            <label for="chasis"><i class="fas fa-id-card"></i> Chasis</label>
+                            <input type="text" id="chasis" th:field="*{chasis}" placeholder="Ej: WBXXS9300WCJ63847" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="marca"><i class="fas fa-tag"></i> Marca</label>
+                            <input type="text" id="marca" th:field="*{marca}" placeholder="Ej: Mercedes-Benz" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modelo"><i class="fas fa-cube"></i> Modelo</label>
+                            <input type="text" id="modelo" th:field="*{modelo}" placeholder="Ej: C-Class 2024" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="anio"><i class="fas fa-calendar"></i> Año</label>
+                            <input type="number" id="anio" th:field="*{anio}" placeholder="2024" min="2000" max="2099" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cilindrada"><i class="fas fa-tachometer-alt"></i> Cilindrada</label>
+                            <input type="text" id="cilindrada" th:field="*{cilindrada}" placeholder="Ej: 2.0 Turbo">
+                        </div>
+                        <div class="form-group">
+                            <label for="tipoCombustible"><i class="fas fa-gas-pump"></i> Combustible</label>
+                            <select id="tipoCombustible" th:field="*{tipoCombustible}">
+                                <option value="">Selecciona un combustible</option>
+                                <option value="Gasolina">Gasolina</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Híbrido">Híbrido</option>
+                                <option value="Eléctrico">Eléctrico</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transmision"><i class="fas fa-cog"></i> Transmisión</label>
+                            <select id="transmision" th:field="*{transmision}">
+                                <option value="">Selecciona transmisión</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Automática">Automática</option>
+                                <option value="CVT">CVT</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio"><i class="fas fa-dollar-sign"></i> Precio (USD)</label>
+                            <input type="number" id="precio" th:field="*{precio}" placeholder="45000" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion"><i class="fas fa-align-left"></i> Descripción</label>
+                        <textarea id="descripcion" th:field="*{descripcion}" placeholder="Descripción detallada del vehículo, características especiales, estado general, etc."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Imagen del Vehículo</label>
+                        <input type="file" id="imagenFile" name="imagenFile" accept="image/*" onchange="previewImage(this)">
+                        <div class="image-preview" id="preview" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview" style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <p id="previewName"></p>
+                        </div>
+                        <div th:if="${vehiculo.imagen != null}" class="image-preview">
+                            <img th:src="@{'/vehiculos/imagen/' + ${vehiculo.idVehiculo}}" alt="Current Image" style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <p>Imagen actual - Reemplaza para cambiar</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inventario"><i class="fas fa-warehouse"></i> Inventario (Opcional)</label>
+                        <select id="inventario" th:field="*{inventario}">
+                            <option value="">--- Sin Inventario ---</option>
+                            <option th:each="inv : ${inventarios}"
+                                    th:value="${inv.idInventario}"
+                                    th:text="${inv.marca + ' - ' + inv.modelo}">
+                            </option>
+                        </select>
+                    </div>
+                    <div style="background: rgba(28, 59, 90, 0.05); border-left: 4px solid var(--blue-secondary); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; color: var(--gray); font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Consejo:</strong> Una vez agregues el vehículo con estado "Activo", aparecerá automáticamente en el catálogo principal del sitio web.
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
+                        <a th:href="@{/vehiculos}" class="btn btn-secondary" style="background: #e0e0e0; color: var(--gray); padding: 0.8rem 1.8rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary" style="background: var(--gold); color: var(--blue-dark); padding: 0.8rem 1.8rem; border-radius: 8px; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-save"></i> <span th:text="${vehiculo.idVehiculo != null ? 'Guardar Cambios' : 'Crear Vehículo'}"></span>
+                        </button>
+                        <form th:if="${vehiculo.idVehiculo != null}" th:action="@{'/vehiculos/eliminar/' + ${vehiculo.idVehiculo}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" style="background: #e53935; color: #fff; padding: 0.8rem 1.8rem; border-radius: 8px; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem;" onclick="return confirm('¿Seguro que deseas eliminar este vehículo?');">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Preview de imagen
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('previewName').textContent = input.files[0].name;
+                    document.getElementById('preview').style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

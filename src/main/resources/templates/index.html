@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoCheckList | Importadora Premium</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">
+        <img th:src="@{/images/AUTOCHECKLIST (4).png}">
+        <div class="logo-text">
+            <span>AUTO</span>
+            <strong>CHECKLIST</strong>
+        </div>
+    </div>
+
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#vehiculos">Vehículos</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#servicios">Servicios</a>
+        <a th:href="@{/login}" class="btn-login">
+            <i class="fas fa-user"></i> Iniciar sesión
+        </a>
+    </nav>
+</header>
+
+
+<!-- ================= HERO ================= -->
+<section id="inicio" class="hero">
+
+    <div class="hero-text">
+        <span class="hero-badge">Concesionario Nacional</span>
+
+        <h1>
+            Vehículos de Alta Gama<br>
+            <span>Garantizando Transparencia</span>
+        </h1>
+
+        <p>
+            Plataforma empresarial para venta y gestión de inventario premium,
+            con trazabilidad documental y atención comercial especializada.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#vehiculos" class="btn-primary">Explorar Catálogo</a>
+            <a th:href="@{/login}" class="btn-outline">Portal Corporativo</a>
+        </div>
+    </div>
+
+    <div class="hero-image">
+        <img th:src="@{/images/mercedez.png}">
+    </div>
+
+</section>
+
+<!-- ================= KPI STRIP ================= -->
+<section class="kpi-strip">
+    <div class="kpi-item">
+        <span class="kpi-number" th:text="${vehiculos != null ? #lists.size(vehiculos) : 0}">0</span>
+        <span class="kpi-text">Vehículos Publicados</span>
+    </div>
+    <div class="kpi-item">
+        <span class="kpi-number">24/7</span>
+        <span class="kpi-text">Disponibilidad Plataforma</span>
+    </div>
+    <div class="kpi-item">
+        <span class="kpi-number">100%</span>
+        <span class="kpi-text">Trazabilidad Documental</span>
+    </div>
+    <div class="kpi-item">
+        <span class="kpi-number">+10</span>
+        <span class="kpi-text">Años de Experiencia</span>
+    </div>
+</section>
+
+
+<!-- ================= VEHICULOS ================= -->
+<section id="vehiculos" class="vehiculos-section">
+
+    <div class="vehiculos-container">
+
+        <!-- LADO IZQUIERDO -->
+        <div class="vehiculos-info">
+            <h2>Catálogo Premium</h2>
+            <p>
+                Descubre nuestra selección exclusiva de vehículos
+                verificados, con respaldo legal y garantía comercial.
+            </p>
+
+            <div class="vehiculos-badges">
+                <div><i class="fas fa-shield-alt"></i> Garantía Legal</div>
+                <div><i class="fas fa-file-contract"></i> Documentación Transparente</div>
+                <div><i class="fas fa-truck"></i> Logística Nacional</div>
+            </div>
+        </div>
+
+        <!-- LADO DERECHO -->
+        <div class="vehiculos-grid">
+
+            <div th:if="${vehiculos != null and vehiculos.size() > 0}"
+                 th:each="vehiculo : ${vehiculos}"
+                 class="vehiculo-card">
+
+                <div class="vehiculo-img">
+                    <img th:if="${vehiculo.imagen != null}"
+                         th:src="@{/imagenes/{id}(id=${vehiculo.idVehiculo})}">
+                    <img th:unless="${vehiculo.imagen != null}"
+                         th:src="@{/images/mercedez.png}">
+                </div>
+
+                <div class="vehiculo-content">
+                    <h3 th:text="${vehiculo.marca + ' ' + vehiculo.modelo}"></h3>
+
+                    <p th:if="${vehiculo.anio}">
+                        Año: <span th:text="${vehiculo.anio}"></span>
+                    </p>
+
+                    <p th:if="${vehiculo.precio != null}">
+                        Precio:
+                        <span th:text="${'$ ' + #numbers.formatDecimal(vehiculo.precio,1,'COMMA',0,'POINT')}"></span>
+                    </p>
+
+                    <p th:if="${vehiculo.transmision}">
+                        Transmisión:
+                        <span th:text="${vehiculo.transmision}"></span>
+                    </p>
+
+                    <button th:onclick="'abrirModalVehiculo(' + ${vehiculo.idVehiculo} + ')'"
+                            class="btn-card">
+                        <i class="fas fa-eye"></i> Ver especificaciones
+                    </button>
+                </div>
+
+            </div>
+
+            <div th:unless="${vehiculos != null and vehiculos.size() > 0}"
+                 class="no-vehiculos">
+                <p>En este momento no hay unidades publicadas. Nuestro equipo comercial puede ayudarte con opciones disponibles bajo pedido.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= NOSOTROS ================= -->
+<section id="nosotros" class="nosotros-section">
+
+    <div class="nosotros-container">
+
+        <div class="nosotros-img">
+            <img th:src="@{/images/mercedez.png}">
+        </div>
+
+        <div class="nosotros-text">
+            <h2>Quiénes Somos</h2>
+            <p>
+                Somos una importadora nacional especializada en vehículos de alta gama,
+                garantizando transparencia, respaldo legal y acompañamiento integral
+                en cada proceso de compra.
+            </p>
+
+            <ul>
+                <li><i class="fas fa-check-circle"></i> +10 años de experiencia</li>
+                <li><i class="fas fa-check-circle"></i> Asesoría personalizada</li>
+                <li><i class="fas fa-check-circle"></i> Verificación técnica certificada</li>
+            </ul>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SERVICIOS ================= -->
+<section id="servicios" class="servicios-section">
+
+    <h2>Nuestros Servicios</h2>
+
+    <div class="servicios-grid">
+
+        <div class="servicio-card">
+            <i class="fas fa-car"></i>
+            <h3>Importación Directa</h3>
+            <p>Gestión completa desde origen hasta entrega.</p>
+        </div>
+
+        <div class="servicio-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Verificación Legal</h3>
+            <p>Documentación certificada y validada.</p>
+        </div>
+
+        <div class="servicio-card">
+            <i class="fas fa-tools"></i>
+            <h3>Inspección Técnica</h3>
+            <p>Evaluación mecánica profesional previa a entrega.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MODALES ================= -->
+<div th:each="vehiculo : ${vehiculos}"
+     th:id="'modal-' + ${vehiculo.idVehiculo}"
+     class="modal-vehiculo">
+
+    <div class="modal-content-vehiculo">
+
+        <span class="close-modal"
+              th:onclick="'cerrarModalVehiculo(' + ${vehiculo.idVehiculo} + ')'">
+            ✕
+        </span>
+
+        <img th:if="${vehiculo.imagen != null}"
+             th:src="@{/imagenes/{id}(id=${vehiculo.idVehiculo})}"
+             class="modal-img">
+
+        <img th:unless="${vehiculo.imagen != null}"
+             th:src="@{/images/mercedez.png}"
+             class="modal-img">
+
+        <h2 th:text="${vehiculo.marca + ' ' + vehiculo.modelo}"></h2>
+
+        <p th:if="${vehiculo.descripcion}"
+           th:text="${vehiculo.descripcion}">
+        </p>
+
+    </div>
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div>
+            <strong>AutoCheckList</strong>
+            <p>Soluciones empresariales para comercialización de vehículos.</p>
+        </div>
+        <div>
+            <strong>Enlaces</strong>
+            <p><a href="#vehiculos">Catálogo</a> · <a href="#nosotros">Nosotros</a> · <a href="#servicios">Servicios</a></p>
+        </div>
+        <div>
+            <strong>Soporte</strong>
+            <p><a th:href="@{/login}">Acceso a plataforma</a></p>
+        </div>
+    </div>
+    <p class="footer-copy">© 2026 AutoCheckList · Todos los derechos reservados</p>
+</footer>
+
+
+<script>
+function abrirModalVehiculo(id){
+    document.getElementById('modal-'+id).classList.add('active');
+}
+
+function cerrarModalVehiculo(id){
+    document.getElementById('modal-'+id).classList.remove('active');
+}
+</script>
+
+</body>
+</html>
